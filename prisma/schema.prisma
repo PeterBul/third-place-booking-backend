@@ -15,11 +15,88 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String @unique
-  hash  String
+  email        String  @unique
+  phone        String? @unique
+  hash         String
+  refreshToken String?
 
   firstName String?
   lastName  String?
 
+  isMemberThirdPlace Boolean
+  isMemberBloom      Boolean
+  Booking            Booking[]
+
+  roles Role[]
+
   @@map("users")
+}
+
+model Role {
+  id        Int      @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String
+  users User[]
+
+  @@map("roles")
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  url  String
+  alt  String?
+  Item Item[]
+
+  @@map("images")
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  imageId     Int?
+  image       Image?        @relation(fields: [imageId], references: [id])
+  BookingItem BookingItem[]
+
+  @@map("items")
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  pickupDate DateTime
+  returnDate DateTime
+  comment    String?
+
+  isPickedUp Boolean @default(false)
+  isReturned Boolean @default(false)
+
+  BookingItem BookingItem[]
+
+  @@map("bookings")
+}
+
+model BookingItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookingId Int
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  itemId    Int
+  item      Item    @relation(fields: [itemId], references: [id])
+
+  @@map("booking_items")
 }

@@ -3,22 +3,22 @@ services:
   dev-db:
     image: postgres:13
     ports:
-      - 5432:5432
+      - '5436:5432'
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: third_place_booking
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
     networks:
-      - database-network
+      - freecodecamp
   test-db:
     image: postgres:13
     ports:
-      - 5433:5432
+      - '5437:5432'
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: third_place_booking
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: nest
     networks:
-      - database-network
+      - freecodecamp
 networks:
-  database-network:
+  freecodecamp:
