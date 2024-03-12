@@ -18,7 +18,10 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     private prisma: PrismaService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        AccessTokenStrategy.extractJWT,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       secretOrKey: config.get('JWT_ACCESS_SECRET'),
     });
   }
@@ -35,5 +38,12 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
     delete user.hash;
     return user;
+  }
+
+  private static extractJWT(req: any): string | null {
+    if (req.cookies && 'access_token' in req.cookies) {
+      return req.cookies.access_token;
+    }
+    return null;
   }
 }

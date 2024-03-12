@@ -12,9 +12,9 @@ import {
 import { AuthService } from './auth.service';
 import { AuthDto, SignInDto } from './dto';
 import { GetUser } from './decorator';
-import { AccessTokenGuard } from './guard';
 import { RefreshTokenGuard } from './guard/refresh-token.guard';
 import { Request, Response } from 'express';
+import { AccessTokenGuard } from './guard';
 
 // TODO: Send refresh tokens with http only cookies
 @Controller('auth')
@@ -44,7 +44,20 @@ export class AuthController {
 
   @UseGuards(AccessTokenGuard)
   @Get('logout')
-  logout(@GetUser('id') userId: number) {
+  logout(
+    @GetUser('id') userId: number,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
     return this.authService.logout(userId);
   }
 
