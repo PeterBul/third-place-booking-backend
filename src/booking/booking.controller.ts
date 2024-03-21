@@ -4,13 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { AccessTokenGuard, RolesGuard } from 'src/auth/guard';
 import { GetUser } from 'src/auth/decorator';
-import { CreateBookingDto } from './dto';
+import { CreateBookingDto, EditBookingDto } from './dto';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { e_Roles } from 'src/auth/enum/role.enum';
 
@@ -21,7 +22,19 @@ export class BookingController {
   constructor(private bookingService: BookingService) {}
 
   @Get()
-  getBookings() {
+  getBookings(): Promise<
+    {
+      id: number;
+      createdAt: Date;
+      updatedAt: Date;
+      userId: number;
+      pickupDate: Date;
+      returnDate: Date;
+      comment: string;
+      isPickedUp: boolean;
+      isReturned: boolean;
+    }[]
+  > {
     return this.bookingService.getAllBookings();
   }
 
@@ -37,7 +50,18 @@ export class BookingController {
 
   @Post()
   createBooking(@GetUser('id') id: number, @Body() dto: CreateBookingDto) {
+    console.log(dto);
     return this.bookingService.createBooking(id, dto);
+  }
+
+  @Patch(':id')
+  editBooking(
+    @GetUser('id') userId: number,
+    @Param('id') bookingId: number,
+    @Body() dto: EditBookingDto,
+  ) {
+    console.log(dto);
+    return this.bookingService.editBooking(userId, bookingId, dto);
   }
 
   @Delete(':id')

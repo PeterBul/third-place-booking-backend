@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class EditItemDto {
   @IsString()
@@ -9,7 +9,7 @@ export class EditItemDto {
   @IsOptional()
   description?: string;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  imageUrl?: string;
+  imageId?: number;
 }

@@ -1,30 +1,38 @@
 import { Transform } from 'class-transformer';
 import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
   IsDateString,
+  IsOptional,
+  IsString,
   IsArray,
   IsInt,
+  IsBoolean,
 } from 'class-validator';
 
-export class CreateBookingDto {
+export class EditBookingDto {
   @IsDateString()
-  @IsNotEmpty()
   @Transform(({ value }) => new Date(value).toISOString())
-  pickupDate: string;
+  @IsOptional()
+  pickupDate?: string;
 
   @IsDateString()
-  @IsNotEmpty()
   @Transform(({ value }) => new Date(value).toISOString())
-  returnDate: string;
+  @IsOptional()
+  returnDate?: string;
 
   @IsString()
   @IsOptional()
   comment?: string;
 
   @IsArray()
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt({ each: true })
-  itemIds: number[];
+  itemIds?: number[];
+
+  @IsOptional()
+  @IsBoolean()
+  isPickedUp?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isReturned?: boolean;
 }

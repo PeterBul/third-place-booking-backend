@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { AccessTokenGuard, RolesGuard } from '../auth/guard';
 import { GetUser, Roles } from '../auth/decorator';
 import { User } from '@prisma/client';
@@ -24,7 +24,13 @@ export class UserController {
 
   @Patch()
   @Roles(e_Roles.User, e_Roles.Admin)
-  editUser(@Body() dto: EditUserDto, @GetUser('id') userId: number) {
+  editMe(@Body() dto: EditUserDto, @GetUser('id') userId: number) {
+    return this.userService.editUser(userId, dto);
+  }
+
+  @Patch(':id')
+  @Roles(e_Roles.User, e_Roles.Admin)
+  editUser(@Body() dto: EditUserDto, @Param('id') userId: number) {
     return this.userService.editUser(userId, dto);
   }
 }

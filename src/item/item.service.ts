@@ -1,13 +1,58 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateItemDto, EditItemDto } from './dto';
+import { Item } from '@prisma/client';
 
 @Injectable()
 export class ItemService {
   constructor(private prisma: PrismaService) {}
 
   async getItems() {
-    return this.prisma.item.findMany();
+    const items = this.prisma.item.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        image: {
+          select: {
+            id: true,
+            url: true,
+            alt: true,
+            isClippable: true,
+          },
+        },
+        BookingItem: {
+          select: {
+            booking: {
+              select: {
+                id: true,
+                createdAt: true,
+                pickupDate: true,
+                returnDate: true,
+                comment: true,
+                isPickedUp: true,
+                isReturned: true,
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return (await items).map((item) => {
+      const { BookingItem, ...rest } = item;
+      return {
+        ...rest,
+        bookings: BookingItem.map((bookingItem) => bookingItem.booking),
+      };
+    });
   }
 
   async getItemById(id: number) {
@@ -44,10 +89,7 @@ export class ItemService {
   async editItem(id: number, item: EditItemDto) {
     return this.prisma.item.update({
       where: { id },
-      data: {
-        title: item.title,
-        description: item.description,
-      },
+      data: { ...item },
     });
   }
 

@@ -52,6 +52,8 @@ model Image {
   alt  String?
   Item Item[]
 
+  isClippable Boolean @default(false)
+
   @@map("images")
 }
 

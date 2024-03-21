@@ -37,6 +37,7 @@ export class ItemController {
   }
 
   @Patch(':id')
+  @Roles(e_Roles.Admin)
   editItemById(
     @Param('id', ParseIntPipe) id: number,
     @Body() item: EditItemDto,
@@ -44,6 +45,7 @@ export class ItemController {
     return this.itemService.editItem(id, item);
   }
 
+  @Roles(e_Roles.Admin)
   @Delete(':id')
   deleteItemById(@Param('id', ParseIntPipe) id: number) {
     return this.itemService.deleteItem(id);
