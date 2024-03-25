@@ -50,7 +50,6 @@ export class BookingController {
 
   @Post()
   createBooking(@GetUser('id') id: number, @Body() dto: CreateBookingDto) {
-    console.log(dto);
     return this.bookingService.createBooking(id, dto);
   }
 
@@ -60,7 +59,6 @@ export class BookingController {
     @Param('id') bookingId: number,
     @Body() dto: EditBookingDto,
   ) {
-    console.log(dto);
     return this.bookingService.editBooking(userId, bookingId, dto);
   }
 

@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateItemDto, EditItemDto } from './dto';
 import { Item } from '@prisma/client';
+import { RolesGuard } from 'src/auth/guard';
+import { Roles } from 'src/auth/decorator';
+import { e_Roles } from 'src/auth/enum/role.enum';
 
 @Injectable()
+@UseGuards(RolesGuard)
+@Roles(e_Roles.User)
 export class ItemService {
   constructor(private prisma: PrismaService) {}
 
@@ -67,6 +72,7 @@ export class ItemService {
     return item;
   }
 
+  @Roles(e_Roles.Admin)
   async createItem(item: CreateItemDto) {
     if (item.imageId) {
       const image = await this.prisma.image.findUnique({
@@ -86,6 +92,7 @@ export class ItemService {
     });
   }
 
+  @Roles(e_Roles.Admin)
   async editItem(id: number, item: EditItemDto) {
     return this.prisma.item.update({
       where: { id },
@@ -93,6 +100,7 @@ export class ItemService {
     });
   }
 
+  @Roles(e_Roles.Admin)
   async deleteItem(id: number) {
     return this.prisma.item.delete({
       where: { id },
