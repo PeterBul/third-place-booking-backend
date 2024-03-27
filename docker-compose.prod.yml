@@ -2,7 +2,6 @@ version: '3.8'
 services:
   postgres:
     image: postgres:13
-    container_name: postgres
     restart: always
     ports:
       - '5432:5432'
@@ -11,19 +10,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   api:
-    container_name: api
+    image: petercbu/3p-booking-server
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - '3334:3334'
     depends_on:
       - postgres
     env_file:
       - .env
-    volumes:
-      - .:/app
-      - /app/node_modules
 
 volumes:
   postgres_data:

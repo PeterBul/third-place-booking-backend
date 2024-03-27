@@ -1,0 +1,14 @@
+FROM node:18.18.0-alpine as builder
+
+WORKDIR /app
+COPY ./package*.json ./
+
+
+# Add prisma schema
+COPY ./prisma ./prisma
+
+RUN yarn
+
+COPY . .
+
+CMD [ "yarn", "start:seed:dev" ]
