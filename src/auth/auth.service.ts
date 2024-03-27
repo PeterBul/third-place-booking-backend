@@ -53,6 +53,7 @@ export class AuthService {
           throw new ConflictException('Credentials taken');
         }
       }
+      throw error;
     }
   }
 
