@@ -9,13 +9,17 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { AccessTokenGuard, RolesGuard } from 'src/auth/guard';
+import {
+  AccessTokenGuard,
+  IsEmailConfirmedGuard,
+  RolesGuard,
+} from 'src/auth/guard';
 import { ItemService } from './item.service';
 import { CreateItemDto, EditItemDto } from './dto';
 import { Roles } from 'src/auth/decorator';
 import { e_Roles } from 'src/auth/enum/role.enum';
 
-@UseGuards(AccessTokenGuard, RolesGuard)
+@UseGuards(AccessTokenGuard, RolesGuard, IsEmailConfirmedGuard)
 @Roles(e_Roles.User)
 @Controller('items')
 export class ItemController {
@@ -23,6 +27,7 @@ export class ItemController {
 
   @Get()
   getItems() {
+    console.log('getItems');
     return this.itemService.getItems();
   }
 

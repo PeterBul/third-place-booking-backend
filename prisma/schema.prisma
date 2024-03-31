@@ -19,6 +19,8 @@ model User {
   phone        String? @unique
   hash         String
   refreshToken String?
+  confirmed    Boolean @default(false)
+  enabled      Boolean @default(true)
 
   firstName String?
   lastName  String?

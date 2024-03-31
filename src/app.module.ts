@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ItemModule } from './item/item.module';
 import { BookingModule } from './booking/booking.module';
 import { ImageModule } from './image/image.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -16,6 +17,12 @@ import { ImageModule } from './image/image.module';
     ItemModule,
     BookingModule,
     ImageModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
   ],
 })
 export class AppModule {}

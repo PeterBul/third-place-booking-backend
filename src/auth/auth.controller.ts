@@ -8,6 +8,8 @@ import {
   UseGuards,
   Res,
   Req,
+  Param,
+  Redirect,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, SignInDto } from './dto';
@@ -15,12 +17,14 @@ import { GetUser } from './decorator';
 import { RefreshTokenGuard } from './guard/refresh-token.guard';
 import { Request, Response } from 'express';
 import { AccessTokenGuard } from './guard';
+import { Throttle } from '@nestjs/throttler';
 
 // TODO: Send refresh tokens with http only cookies
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   async signUp(
     @Body() dto: AuthDto,
@@ -71,5 +75,19 @@ export class AuthController {
     const authTokens = await this.authService.refreshTokens(userId, request);
     this.authService.storeTokenInCookie(res, authTokens);
     return authTokens;
+  }
+
+  @Get('confirm/:token')
+  @Redirect('http://localhost:8081/login')
+  async confirmEmail(@Param('token') token) {
+    console.log('token', token);
+    await this.authService.confirmEmail(token);
+  }
+
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
+  @UseGuards(AccessTokenGuard)
+  @Get('resend')
+  async resendEmailConfirmation(@GetUser() user) {
+    await this.authService.sendEmailConfirmation(user);
   }
 }
