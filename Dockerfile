@@ -4,7 +4,8 @@ FROM node:18.18.0-alpine as builder
 WORKDIR /app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+COPY package.json ./
+COPY yarn.lock ./
 
 # Copy prisma schema
 COPY prisma ./prisma
