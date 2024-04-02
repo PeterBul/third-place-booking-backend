@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateImageDto {
   @IsString()
@@ -7,4 +7,7 @@ export class CreateImageDto {
   @IsString()
   @IsOptional()
   alt?: string;
+  @IsBoolean()
+  @IsOptional()
+  isClippable?: boolean;
 }
