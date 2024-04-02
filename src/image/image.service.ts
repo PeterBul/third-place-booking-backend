@@ -18,10 +18,7 @@ export class ImageService {
 
   addImage(dto: CreateImageDto) {
     return this.prisma.image.create({
-      data: {
-        url: dto.url,
-        alt: dto.alt,
-      },
+      data: dto,
     });
   }
 

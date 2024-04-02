@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -18,6 +19,7 @@ import { ItemService } from './item.service';
 import { CreateItemDto, EditItemDto } from './dto';
 import { Roles } from 'src/auth/decorator';
 import { e_Roles } from 'src/auth/enum/role.enum';
+import { GetItemsDto } from './dto/get-items.dto';
 
 @UseGuards(AccessTokenGuard, RolesGuard, IsEmailConfirmedGuard)
 @Roles(e_Roles.Member, e_Roles.Admin)
@@ -26,9 +28,8 @@ export class ItemController {
   constructor(private itemService: ItemService) {}
 
   @Get()
-  getItems() {
-    console.log('getItems');
-    return this.itemService.getItems();
+  getItems(@Query() query: GetItemsDto) {
+    return this.itemService.getItems(query);
   }
 
   @Get(':id')

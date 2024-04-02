@@ -1,18 +1,15 @@
 import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateItemDto, EditItemDto } from './dto';
-import { Item } from '@prisma/client';
-import { RolesGuard } from 'src/auth/guard';
 import { Roles } from 'src/auth/decorator';
 import { e_Roles } from 'src/auth/enum/role.enum';
+import { GetItemsDto } from './dto/get-items.dto';
 
 @Injectable()
-@UseGuards(RolesGuard)
-@Roles(e_Roles.User)
 export class ItemService {
   constructor(private prisma: PrismaService) {}
 
-  async getItems() {
+  async getItems(dto: GetItemsDto) {
     const items = this.prisma.item.findMany({
       select: {
         id: true,
@@ -27,6 +24,13 @@ export class ItemService {
           },
         },
         BookingItem: {
+          where: {
+            booking: {
+              pickupDate: {
+                gte: dto.from && new Date(dto.from),
+              },
+            },
+          },
           select: {
             booking: {
               select: {
