@@ -7,7 +7,7 @@ import { UserService } from './user.service';
 import { e_Roles } from 'src/auth/enum/role.enum';
 
 @UseGuards(AccessTokenGuard, RolesGuard)
-@Roles(e_Roles.User)
+@Roles(e_Roles.Member, e_Roles.Admin)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}

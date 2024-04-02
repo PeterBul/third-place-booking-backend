@@ -20,7 +20,7 @@ import { Roles } from 'src/auth/decorator';
 import { e_Roles } from 'src/auth/enum/role.enum';
 
 @UseGuards(AccessTokenGuard, RolesGuard, IsEmailConfirmedGuard)
-@Roles(e_Roles.User)
+@Roles(e_Roles.Member, e_Roles.Admin)
 @Controller('items')
 export class ItemController {
   constructor(private itemService: ItemService) {}

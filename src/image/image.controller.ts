@@ -17,7 +17,7 @@ import { CreateImageDto } from './dto';
 
 @Controller('images')
 @UseGuards(AccessTokenGuard, RolesGuard)
-@Roles(e_Roles.User)
+@Roles(e_Roles.Member, e_Roles.Admin)
 export class ImageController {
   constructor(private imageService: ImageService) {}
 

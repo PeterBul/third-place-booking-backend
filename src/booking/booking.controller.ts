@@ -17,7 +17,7 @@ import { e_Roles } from 'src/auth/enum/role.enum';
 
 @Controller('bookings')
 @UseGuards(AccessTokenGuard, RolesGuard)
-@Roles(e_Roles.User)
+@Roles(e_Roles.Member, e_Roles.Admin)
 export class BookingController {
   constructor(private bookingService: BookingService) {}
 

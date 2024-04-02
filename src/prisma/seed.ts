@@ -18,9 +18,19 @@ async function main() {
       name: 'User',
     },
   });
+
+  const member = await prisma.role.upsert({
+    where: { id: 1337 },
+    update: {},
+    create: {
+      id: 1337,
+      name: 'Member',
+    },
+  });
   console.log({
     admin,
     user,
+    member,
   });
 }
 main()
