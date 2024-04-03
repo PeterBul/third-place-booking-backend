@@ -43,8 +43,7 @@ export class ItemService {
                 isReturned: true,
                 user: {
                   select: {
-                    firstName: true,
-                    lastName: true,
+                    name: true,
                     email: true,
                     phone: true,
                   },

@@ -43,8 +43,7 @@ async function main() {
         hash: await argon.hash(process.env.ADMIN_PASS),
         isMemberBloom: false,
         isMemberThirdPlace: false,
-        firstName: process.env.ADMIN_FIRST_NAME,
-        lastName: process.env.ADMIN_LAST_NAME,
+        name: process.env.ADMIN_NAME,
         confirmed: true,
         roles: {
           connect: {

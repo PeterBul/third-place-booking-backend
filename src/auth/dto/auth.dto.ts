@@ -49,9 +49,5 @@ export class AuthDto {
 
   @IsString()
   @IsOptional()
-  firstName?: string;
-
-  @IsString()
-  @IsOptional()
-  lastName?: string;
+  name?: string;
 }

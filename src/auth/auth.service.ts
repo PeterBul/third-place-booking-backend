@@ -55,8 +55,7 @@ export class AuthService {
           phone: dto.phone,
           isMemberBloom: dto.isMemberBloom,
           isMemberThirdPlace: dto.isMemberThirdPlace,
-          firstName: dto.firstName,
-          lastName: dto.lastName,
+          name: dto.name,
         },
         include: {
           roles: true,

@@ -12,10 +12,7 @@ export class EditUserDto {
   email?: string;
   @IsString()
   @IsOptional()
-  firstName?: string;
-  @IsString()
-  @IsOptional()
-  lastName?: string;
+  name?: string;
   @IsPhoneNumber()
   @IsOptional()
   phone?: string;
