@@ -25,6 +25,7 @@ export class UserController {
     private userRolesService: UserRolesService,
   ) {}
   @Get('me')
+  @Roles(e_Roles.User)
   getMe(@GetUser() user: User) {
     return user;
   }
