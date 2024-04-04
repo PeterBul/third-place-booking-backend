@@ -80,7 +80,6 @@ export class AuthController {
   @Get('confirm/:token')
   @Redirect(`${process.env.WEB_URL}/login`)
   async confirmEmail(@Param('token') token) {
-    console.log('token', token);
     await this.authService.confirmEmail(token);
   }
 
