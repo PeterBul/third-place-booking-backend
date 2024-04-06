@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -42,6 +43,10 @@ export class BookingService {
   async createBooking(userId: number, dto: CreateBookingDto) {
     const { itemIds, ...dtoRest } = dto;
 
+    if (await this.doesBookingOverlap(dtoRest, itemIds)) {
+      throw new ConflictException('Booking overlaps with existing booking');
+    }
+
     return this.prisma.booking.create({
       data: {
         ...dtoRest,
@@ -53,6 +58,40 @@ export class BookingService {
         },
       },
     });
+  }
+
+  private async doesBookingOverlap(
+    dtoRest: { pickupDate: string; returnDate: string; comment?: string },
+    itemIds: number[],
+  ) {
+    return !!(await this.prisma.booking.findFirst(
+      this.getOverlappingBookingsPrismaObject(dtoRest, itemIds),
+    ));
+  }
+
+  private getOverlappingBookingsPrismaObject(
+    booking: { pickupDate: string; returnDate: string },
+    itemIds: number[],
+  ) {
+    return {
+      where: {
+        pickupDate: {
+          lte: booking.returnDate,
+        },
+        returnDate: {
+          gte: booking.pickupDate,
+        },
+        AND: {
+          BookingItem: {
+            some: {
+              itemId: {
+                in: itemIds,
+              },
+            },
+          },
+        },
+      },
+    };
   }
 
   async editBooking(userId: number, bookingId: number, dto: EditBookingDto) {

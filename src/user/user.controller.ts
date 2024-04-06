@@ -47,6 +47,14 @@ export class UserController {
     return this.userService.editUser(userId, dto);
   }
 
+  @Get('me/roles')
+  @Roles(e_Roles.User)
+  async getMyRoles(@GetUser() user: User) {
+    return (await this.userRolesService.getUserRoles(user.id)).map(
+      (role) => role.id,
+    );
+  }
+
   @Get(':userId/roles')
   @Roles(e_Roles.Admin)
   async getUserRoles(@Param('userId') userId: number) {
