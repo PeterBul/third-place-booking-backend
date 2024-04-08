@@ -16,6 +16,7 @@ import { Request, Response } from 'express';
 import * as nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private mailService: MailService,
   ) {
     try {
       this.transporter = nodemailer.createTransport({
@@ -227,16 +229,11 @@ export class AuthService {
 
     const url = `${this.config.get('BASE_URL')}/auth/confirm/${token}`;
 
-    try {
-      this.transporter.sendMail({
-        from: this.config.get('EMAIL_USER'),
-        to: user.email,
-        subject: 'Confirm your email address',
-        html: `Please click <a href="${url}">${url}</a> to confirm your email address`,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    this.mailService.sendEmail({
+      to: user.email,
+      subject: 'Confirm your email address',
+      html: `Please click <a href="${url}">${url}</a> to confirm your email address`,
+    });
   }
 
   storeTokenInCookie(

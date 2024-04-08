@@ -10,6 +10,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { RoleController } from './role/role.controller';
 import { RoleService } from './role/role.service';
 import { RoleModule } from './role/role.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { MailService } from './mail/mail.service';
 
 @Module({
   imports: [
@@ -27,6 +30,8 @@ import { RoleModule } from './role/role.module';
       },
     ]),
     RoleModule,
+    ScheduleModule.forRoot(),
   ],
+  providers: [TasksService, MailService],
 })
 export class AppModule {}
