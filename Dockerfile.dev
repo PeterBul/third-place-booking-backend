@@ -11,4 +11,6 @@ RUN yarn
 
 COPY . .
 
+RUN npx prisma generate
+
 CMD [ "yarn", "start:seed:studio:dev" ]

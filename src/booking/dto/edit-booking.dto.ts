@@ -35,4 +35,8 @@ export class EditBookingDto {
   @IsOptional()
   @IsBoolean()
   isReturned?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isArchived?: boolean;
 }

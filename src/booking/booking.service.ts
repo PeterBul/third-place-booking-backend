@@ -6,18 +6,27 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto, EditBookingDto } from './dto';
+import type { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BookingService {
   constructor(private prisma: PrismaService) {}
 
   async getAllBookings() {
-    return this.prisma.booking.findMany();
+    return this.prisma.booking.findMany({
+      where: { isArchived: false },
+    });
+  }
+
+  async getArchivedBookings() {
+    return this.prisma.booking.findMany({
+      where: { isArchived: true },
+    });
   }
 
   async getUserBookings(userId: number) {
     return this.prisma.booking.findMany({
-      where: { userId },
+      where: { userId, isArchived: false },
     });
   }
 
@@ -72,9 +81,10 @@ export class BookingService {
   private getOverlappingBookingsPrismaObject(
     booking: { pickupDate: string; returnDate: string },
     itemIds: number[],
-  ) {
+  ): Prisma.BookingFindFirstArgs {
     return {
       where: {
+        isArchived: false,
         pickupDate: {
           lte: booking.returnDate,
         },

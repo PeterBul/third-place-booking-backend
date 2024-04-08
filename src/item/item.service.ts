@@ -26,9 +26,10 @@ export class ItemService {
         BookingItem: {
           where: {
             booking: {
-              pickupDate: {
+              returnDate: {
                 gte: dto.from && new Date(dto.from),
               },
+              isArchived: false,
             },
           },
           select: {

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
@@ -22,7 +23,7 @@ export class BookingController {
   constructor(private bookingService: BookingService) {}
 
   @Get()
-  getBookings(): Promise<
+  getBookings(@Query() query: { isArchived?: string }): Promise<
     {
       id: number;
       createdAt: Date;
@@ -35,6 +36,9 @@ export class BookingController {
       isReturned: boolean;
     }[]
   > {
+    if (query.isArchived === 'true') {
+      return this.bookingService.getArchivedBookings();
+    }
     return this.bookingService.getAllBookings();
   }
 
