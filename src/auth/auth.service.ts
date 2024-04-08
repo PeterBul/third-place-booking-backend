@@ -53,7 +53,7 @@ export class AuthService {
           email: dto.email,
           hash,
           phone: dto.phone,
-          isMemberBloom: dto.isMemberBloom,
+          isMemberBloom: false,
           isMemberThirdPlace: dto.isMemberThirdPlace,
           name: dto.name,
         },

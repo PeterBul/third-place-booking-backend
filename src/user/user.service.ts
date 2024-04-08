@@ -17,10 +17,22 @@ export class UserService {
   }
 
   async getAllUsers() {
-    const users = await this.prisma.user.findMany();
-    users.forEach((user) => {
-      delete user.hash;
-      delete user.refreshToken;
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        confirmed: true,
+        enabled: true,
+        isMemberThirdPlace: true,
+        roles: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     return users;
   }
