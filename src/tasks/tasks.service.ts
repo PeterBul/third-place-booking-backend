@@ -34,6 +34,9 @@ export class TasksService {
   // }
   @Cron('0 3 * * *')
   async nonAdmittedMember() {
+    if (this.config.get('NODE_ENV') === 'development') {
+      return;
+    }
     const noneMemberUserCount = await this.prisma.user.count({
       where: {
         roles: {
@@ -57,6 +60,9 @@ export class TasksService {
 
   @Cron('0 8 * * *')
   async remindToDeliver() {
+    if (this.config.get('NODE_ENV') === 'development') {
+      return;
+    }
     const users = await this.prisma.user.findMany({
       where: {
         Booking: {
