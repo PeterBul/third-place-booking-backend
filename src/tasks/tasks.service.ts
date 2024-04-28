@@ -32,6 +32,7 @@ export class TasksService {
   //     html: `A query was made to the database to keep it alive. There are ${noneMemberUserCount} users that have not gained member privileges.`,
   //   });
   // }
+  // This is UTC time so the actual time is 5:00
   @Cron('0 3 * * *')
   async nonAdmittedMember() {
     if (this.config.get('NODE_ENV') === 'development') {
@@ -58,7 +59,8 @@ export class TasksService {
     });
   }
 
-  @Cron('0 8 * * *')
+  // This is UTC time so the actual time is 8:00
+  @Cron('0 6 * * *')
   async remindToDeliver() {
     if (this.config.get('NODE_ENV') === 'development') {
       return;
