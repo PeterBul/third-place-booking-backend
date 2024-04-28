@@ -4,6 +4,7 @@ import { Cron } from '@nestjs/schedule';
 import { MailService } from 'src/mail/mail.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as moment from 'moment';
+import { e_Roles } from 'src/auth/enum/role.enum';
 
 @Injectable()
 export class TasksService {
@@ -42,8 +43,8 @@ export class TasksService {
       where: {
         roles: {
           none: {
-            name: {
-              equals: 'Member',
+            id: {
+              equals: e_Roles.Member,
             },
           },
         },
