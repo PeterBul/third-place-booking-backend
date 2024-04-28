@@ -15,8 +15,8 @@ export class AuthDto {
   email: string;
 
   @IsString()
-  @IsOptional()
-  password?: string;
+  @IsNotEmpty()
+  password: string;
 
   @IsPhoneNumber()
   @IsOptional()
@@ -36,6 +36,6 @@ export class AuthDto {
   isMemberThirdPlace: boolean;
 
   @IsString()
-  @IsOptional()
-  name?: string;
+  @IsNotEmpty()
+  name: string;
 }
