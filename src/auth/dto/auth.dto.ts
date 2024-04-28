@@ -11,6 +11,7 @@ import {
 export class AuthDto {
   @IsEmail()
   @IsNotEmpty()
+  @Transform(({ value }: { value: string }) => value.trim().toLowerCase())
   email: string;
 
   @IsString()
