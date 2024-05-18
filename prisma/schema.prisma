@@ -16,13 +16,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name         String
-  email        String  @unique
-  phone        String? @unique
-  hash         String
-  refreshToken String?
-  confirmed    Boolean @default(false)
-  enabled      Boolean @default(true)
+  name               String
+  email              String  @unique
+  phone              String? @unique
+  hash               String
+  refreshToken       String?
+  confirmed          Boolean @default(false)
+  enabled            Boolean @default(true)
+  resetPasswordToken String?
 
   isMemberThirdPlace Boolean
   isMemberBloom      Boolean

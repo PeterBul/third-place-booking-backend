@@ -12,7 +12,12 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, SignInDto } from './dto';
+import {
+  AuthDto,
+  ForgotPasswordDto,
+  SignInDto,
+  UpdatePasswordDto,
+} from './dto';
 import { GetUser } from './decorator';
 import { RefreshTokenGuard } from './guard/refresh-token.guard';
 import { Request, Response } from 'express';
@@ -42,6 +47,21 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const authTokens = await this.authService.signIn(dto);
+    this.authService.storeTokenInCookie(res, authTokens);
+    return authTokens;
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.authService.forgotPassword(dto.email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body() dto: UpdatePasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const authTokens = await this.authService.updatePassword(dto);
     this.authService.storeTokenInCookie(res, authTokens);
     return authTokens;
   }

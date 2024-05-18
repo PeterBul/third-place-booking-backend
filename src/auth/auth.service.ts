@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, SignInDto } from './dto';
+import { AuthDto, SignInDto, UpdatePasswordDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
@@ -189,13 +189,18 @@ export class AuthService {
     return await this.signTokens(user.id, user.email, user.roles);
   }
 
-  async signEmail(userId: number) {
+  async signEmail(
+    userId: number,
+    signingKey:
+      | 'JWT_EMAIL_SECRET'
+      | 'JWT_RESET_PASSWORD_SECRET' = 'JWT_EMAIL_SECRET',
+  ) {
     const payload = {
       userId,
     };
 
     return this.jwt.signAsync(payload, {
-      secret: this.config.get('JWT_EMAIL_SECRET'),
+      secret: this.config.get(signingKey),
       expiresIn: '1d',
     });
   }
@@ -234,6 +239,65 @@ export class AuthService {
       subject: 'Confirm your email address',
       html: `Please click <a href="${url}">${url}</a> to confirm your email address`,
     });
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    const token = await this.signEmail(user.id, 'JWT_RESET_PASSWORD_SECRET');
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetPasswordToken: token,
+      },
+    });
+
+    const url = `${this.config.get('WEB_URL')}/reset-password/${token}`;
+
+    this.mailService.sendEmail({
+      to: user.email,
+      subject: 'Reset your password',
+      html: `Please click <a href="${url}">${url}</a> to reset your password`,
+    });
+  }
+
+  async updatePassword(dto: UpdatePasswordDto) {
+    const payload = this.jwt.verify(dto.token, {
+      secret: this.config.get('JWT_RESET_PASSWORD_SECRET'),
+    }) as { userId: number };
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.userId, resetPasswordToken: dto.token },
+      include: {
+        roles: true,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('Invalid token');
+    }
+
+    const hash = await this.hashData(dto.password);
+
+    await this.prisma.user.update({
+      where: { id: payload.userId },
+      data: {
+        hash,
+        resetPasswordToken: null,
+      },
+    });
+
+    return {
+      ...this.signTokens(user.id, user.email, user.roles),
+      email: user.email,
+    };
   }
 
   storeTokenInCookie(
