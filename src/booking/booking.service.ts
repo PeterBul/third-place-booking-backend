@@ -73,9 +73,38 @@ export class BookingService {
     dtoRest: { pickupDate: string; returnDate: string; comment?: string },
     itemIds: number[],
   ) {
+    const itemOverlaps = await Promise.all(
+      itemIds.map((itemId) => this.getOverlapCount(dtoRest, itemId)),
+    );
+    return itemOverlaps.some((overlap) => overlap > 0);
     return !!(await this.prisma.booking.findFirst(
       this.getOverlappingBookingsPrismaObject(dtoRest, itemIds),
     ));
+  }
+
+  private async getOverlapCount(
+    dtoRest: { pickupDate: string; returnDate: string },
+    itemId: number,
+  ) {
+    return this.prisma.bookingItem.count({
+      where: {
+        booking: {
+          pickupDate: {
+            lte: dtoRest.returnDate,
+          },
+          returnDate: {
+            gte: dtoRest.pickupDate,
+          },
+          isArchived: false,
+        },
+        item: {
+          id: itemId,
+          count: {
+            gte: 0,
+          },
+        },
+      },
+    });
   }
 
   private getOverlappingBookingsPrismaObject(

@@ -12,4 +12,8 @@ export class CreateItemDto {
   @IsNumber()
   @IsOptional()
   imageId?: number;
+
+  @IsNumber()
+  @IsOptional()
+  count?: number;
 }

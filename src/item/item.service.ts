@@ -15,6 +15,7 @@ export class ItemService {
         id: true,
         title: true,
         description: true,
+        count: true,
         image: {
           select: {
             id: true,
@@ -92,6 +93,7 @@ export class ItemService {
         title: item.title,
         description: item.description,
         imageId: item.imageId,
+        count: item.count,
       },
     });
   }
