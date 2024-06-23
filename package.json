@@ -32,7 +32,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --watch --no-cache --config ./test/jest-e2e.json",
-    "docker:build": "docker compose -f .docker-compose.prod.yml build --no-cache",
+    "docker:build": "docker compose -f docker-compose.prod.yml build --no-cache",
     "docker:push": "docker push petercbu/3p-booking-server"
   },
   "prisma": {
