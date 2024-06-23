@@ -48,6 +48,9 @@ export class TasksService {
             },
           },
         },
+        isMemberThirdPlace: {
+          equals: true,
+        },
       },
     });
     if (noneMemberUserCount === 0) {
