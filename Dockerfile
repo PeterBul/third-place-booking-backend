@@ -1,4 +1,6 @@
-FROM node:18.18.0-alpine as builder
+FROM node:20.19.6-alpine as builder
+
+RUN apk add --no-cache openssl
 
 # Create app directory
 WORKDIR /app
@@ -16,7 +18,11 @@ COPY . .
 
 RUN yarn build
 
-FROM node:18.18.0-alpine
+FROM node:20.19.6-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache openssl
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
